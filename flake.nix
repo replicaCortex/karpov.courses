@@ -29,7 +29,7 @@
           shellHook = ''
             # явно экспортируем PYTHONPATH
             export PYTHONPATH="${pythonEnv}:$PYTHONPATH:${pythonEnv}/${pythonEnv.sitePackages}"
-            # exec zsh
+            exec zsh
           '';
         };
       }
