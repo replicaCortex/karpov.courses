@@ -25,15 +25,12 @@
         };
 
         machine = nixpkgs.lib.nixosSystem {
-          system = builtins.replaceStrings ["darwin"] ["linux"] system;
-
+          system = system;
           modules = [base ./PostgreSQL.nix];
         };
 
         program = pkgs.writeShellScript "run-vm.sh" ''
-          export NIX_DISK_IMAGE=$(mktemp -u -t nixos.qcow2)
-
-          # trap "rm -f $NIX_DISK_IMAGE" EXIT
+          export NIX_DISK_IMAGE=$(mktemp -u -t nixos.qcow2.XXXXX)
 
           ${machine.config.system.build.vm}/bin/run-nixos-vm
         '';
