@@ -1,33 +1,33 @@
-from datetime import datetime
-from sqlalchemy import TIMESTAMP, ForeignKey, Integer, String
+from sqlalchemy import ForeignKey, Integer, String, TIMESTAMP
 from sqlalchemy.orm import mapped_column, relationship, Mapped
-from database import Base
+from .database import Base
+from datetime import datetime
 
 
 class Post(Base):
     __tablename__: str = "post"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    test: Mapped[str] = mapped_column(String)
+    text: Mapped[str] = mapped_column(String)
     topic: Mapped[str] = mapped_column(String)
 
 
 class Users(Base):
-    __tablename__: str = "users"
+    __tablename__: str = "user_data"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    gender: Mapped[int] = mapped_column(Integer)
+    age: Mapped[int] = mapped_column(Integer)
     country: Mapped[str] = mapped_column(String)
     os: Mapped[str] = mapped_column(String)
     exp_group: Mapped[int] = mapped_column(Integer)
 
 
 class FeedAction(Base):
-    __tablename__: str = "feed_action"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    __tablename__: str = "feed_data"
 
     user_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("users.id"), primary_key=True
+        Integer, ForeignKey("user_data.user_id"), primary_key=True
     )
     user_relationship: Mapped["Users"] = relationship("Users")
 
@@ -37,4 +37,4 @@ class FeedAction(Base):
     post_relationship: Mapped["Post"] = relationship("Post")
 
     action: Mapped[str] = mapped_column(String)
-    time: Mapped[datetime] = mapped_column(TIMESTAMP)
+    timestamp: Mapped[datetime] = mapped_column(TIMESTAMP)

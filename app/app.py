@@ -2,9 +2,9 @@ from fastapi import Depends, FastAPI
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from database import SessionLocal
-from schema import PostGet, UserGet, FeedActionGet
-from table_post import Users, Post, FeedAction
+from .database import SessionLocal
+from .schema import PostGet, UserGet, FeedActionGet
+from .table_post import Users, Post, FeedAction
 
 app = FastAPI()
 
@@ -16,7 +16,7 @@ def get_db():
 
 @app.get("/user/{id}", response_model=list[UserGet])
 def get_user_id(id: int, limit: int = 10, db: Session = Depends(get_db)):
-    return db.query(Users).filter(Users.id == id).limit(limit).all()
+    return db.query(Users).filter(Users.user_id == id).limit(limit).all()
 
 
 @app.get("/post/{id}", response_model=list[PostGet])
@@ -29,18 +29,18 @@ def get_user_feed(id: int, limit: int = 10, db: Session = Depends(get_db)):
     return (
         db.query(FeedAction)
         .filter(FeedAction.user_id == id)
-        .order_by(FeedAction.time.desc())
+        .order_by(FeedAction.timestamp.desc())
         .limit(limit)
         .all()
     )
 
 
 @app.get("/post/{id}/feed", response_model=list[FeedActionGet])
-def get_user_feed(id: int, limit: int = 10, db: Session = Depends(get_db)):
+def get_post_feed(id: int, limit: int = 10, db: Session = Depends(get_db)):
     return (
         db.query(FeedAction)
         .filter(FeedAction.post_id == id)
-        .order_by(FeedAction.time.desc())
+        .order_by(FeedAction.timestamp.desc())
         .limit(limit)
         .all()
     )

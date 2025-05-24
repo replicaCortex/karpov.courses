@@ -3,7 +3,9 @@ from pydantic import BaseModel
 
 
 class UserGet(BaseModel):
-    id: int
+    user_id: int
+    gender: int
+    age: int
     country: str = ""
     os: str = ""
     exp_group: int
@@ -14,7 +16,7 @@ class UserGet(BaseModel):
 
 class PostGet(BaseModel):
     id: int
-    test: str = ""
+    text: str = ""
     topic: str = ""
 
     class Config:
@@ -22,15 +24,13 @@ class PostGet(BaseModel):
 
 
 class FeedActionGet(BaseModel):
-    id: int
-
     user_id: int
     user_relationship: UserGet
 
     post_id: int
     post_relationship: PostGet
 
-    time: datetime
+    timestamp: datetime
     action: str = ""
 
     class Config:

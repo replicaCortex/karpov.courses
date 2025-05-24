@@ -5,7 +5,7 @@ nix develop
 server
 
 ```nix
-uvicorn app:app --reload
+uvicorn app.app:app --reload
 ```
 
 vm
