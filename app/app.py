@@ -5,6 +5,8 @@ from sqlalchemy.orm import Session
 from .database import SessionLocal
 from .schema import PostGet, UserGet, FeedActionGet
 from .table_post import Users, Post, FeedAction
+from .model_proba import get_mode_list, predict
+import pandas as pd
 
 app = FastAPI()
 
@@ -12,6 +14,10 @@ app = FastAPI()
 def get_db():
     with SessionLocal() as db:
         return db
+
+
+def get_mode():
+    return get_mode_list
 
 
 @app.get("/user/{id}", response_model=list[UserGet])
@@ -60,3 +66,16 @@ def get_post_recommend(id: int = 3, limit: int = 10, db: Session = Depends(get_d
         .limit(limit)
         .all()
     )
+
+
+@app.get("/test/rec")
+def get_test_recommend(top_k: int = 5, mode_list=Depends(get_mode_list)):
+    ans = predict(list_model=mode_list, top_k=top_k)
+
+    df_post_data = pd.read_csv("date/post_dataset", index_col=0)
+
+    df_user_data = []
+    for post_id, _ in ans:
+        df_user_data.append(df_post_data.loc[post_id]["text"])
+
+    return df_user_data
