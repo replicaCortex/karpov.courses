@@ -159,6 +159,7 @@
             jupyter
             nbconvert
             tqdm
+            gradio
           ]);
       in {
         devShell = pkgs.mkShell {

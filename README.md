@@ -1,16 +1,11 @@
-```nix
-nix develop
-```
+Modern freak-recommendation system 
+---
 
-server
+<p align="center">
+<img src="./fig/prev.png" alt="image">
+</p>
 
-```nix
-uvicorn app.app:app --reload
-```
-
-vm
-
-```nix
-cd vm
-nix run
+run 
+```python
+gradio app/gradio.py
 ```

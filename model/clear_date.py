@@ -8,7 +8,7 @@ def clear_user_data(df_user_data):
     df_user_data_1 = pd.get_dummies(df_user_data, columns=["country", "city", "os"])
     df_user_data_1 = df_user_data_1.drop(["source"], axis=1)
     df_user_data_1 = df_user_data_1.set_index("user_id")
-    df_user_data_1 = df_user_data_1.drop(["Unnamed: 0"], axis = 1)
+    # df_user_data_1 = df_user_data_1.drop(["Unnamed: 0"], axis = 1)
     df_user_data_1 = df_user_data_1.drop(["exp_group"], axis = 1)
     df_user_data_1 = df_user_data_1.dropna()
     return df_user_data_1
@@ -31,7 +31,7 @@ def clear_post_data(df_post_data):
     noise = np.random.normal(loc=0.0, scale=20.0, size=N)
     df_post_data_1["tfidf_sum_noisy"] = df_post_data_1["tfidf_sum"] + noise
 
-    df_post_data_1 = df_post_data_1.drop(["Unnamed: 0"], axis = 1)
+    # df_post_data_1 = df_post_data_1.drop(["Unnamed: 0"], axis = 1)
     df_post_data_1 = df_post_data_1.dropna()
 
     return df_post_data_1

@@ -1,8 +1,7 @@
 import pickle
 import pandas as pd
 import numpy as np
-from model.clear_date import clear_post_data
-
+from model.clear_date import clear_post_data, batch_load_sql
 
 def get_mode_list():
     list_model = []
@@ -14,29 +13,29 @@ def get_mode_list():
 
 
 def predict(list_model, top_k: int, user):
-
-    df_post_data = pd.read_csv("date/post_dataset")
-    X = pd.read_csv("date/X")
-    X = X.drop(["Unnamed: 0"], axis=1)
+    df_post_data = batch_load_sql("SELECT * FROM post LIMIT 10000")
+    X = pd.read_csv("date/X").drop(["Unnamed: 0"], axis=1)
 
     df_post_data_1 = clear_post_data(df_post_data)
-
-    p = df_post_data_1.reset_index()
-    users_block = pd.concat([user] * len(p), ignore_index=True)
-    X_cand = pd.concat(
-        [users_block.reset_index(drop=True), p.reset_index(drop=True)], axis=1
-    )
+    post = df_post_data_1.reset_index(drop=True)
+    print(post.head())
+    users_block = pd.concat([user] * len(post), ignore_index=True)
+    X_cand = pd.concat([users_block.reset_index(drop=True),
+                        post.reset_index(drop=True)], axis=1)
     X_cand = X_cand[X.columns]
 
-
-    list_proba = []
-
+    proba_list = []
     for model in list_model:
-        list_proba.append(model.predict_proba(X_cand)[:, 1])
+        proba = model.predict_proba(X_cand)[:, 1]
+        proba_list.append(proba)
 
-    print(list_proba)
+    proba_matrix = np.vstack(proba_list)
+    avg_proba = proba_matrix.mean(axis=0)
 
-    avg = sum(list_proba) / len(list_proba)
-    top_idx = np.argsort(avg)[::-1][:top_k]
+    top_indices = np.argsort(avg_proba)[::-1][:top_k]
+    print(top_indices)
 
-    return list(zip(p.loc[top_idx, "id"], avg[top_idx]))
+    top_probs = avg_proba[top_indices]
+    print(top_probs)
+
+    return top_indices.tolist(), top_probs
